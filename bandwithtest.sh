@@ -80,7 +80,7 @@ NC='\033[0m'
 #------------------#
 
 input=tmpapi/api-ips
-sudo systemctl stop cloudplow
+#sudo systemctl stop cloudplow
 while IFS= read -r ip; do
 	hostsline="$ip\t$api"
 	sudo -- sh -c -e "echo '$hostsline' >> /etc/hosts"
@@ -102,7 +102,7 @@ while IFS= read -r ip; do
 	sudo cp /etc/hosts.backup /etc/hosts
 	fi
 done < "$input"
-sudo systemctl start cloudplow
+#sudo systemctl start cloudplow
 #-----------------#
 # Use best result #
 #-----------------#
