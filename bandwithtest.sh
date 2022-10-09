@@ -1,16 +1,12 @@
 #!/bin/bash
 
-#-----------#
-# Variables #
-#-----------#
-#check if /mnt/remote/Backups/GoogleDriveSpeedTest/500MB.bin exists
-#If not, create it.
 
 if [ ! -f /mnt/remote/Backups/GoogleDriveSpeedTest/500MB.bin ]; then
     echo "First run detected. Creating 500MB test file and uploading it to Google Drive."
     mkdir /mnt/remote/Backups/GoogleDriveSpeedTest/
     fallocate -l 500M /tmp/500MB.bin
     mv /tmp/500MB.bin /mnt/remote/Backups/GoogleDriveSpeedTest/
+    echo "Finished uploading to Google Drive."
 fi
 
 
@@ -44,6 +40,7 @@ done
 mkdir tmpapi
 mkdir tmpapi/speedresults/
 mkdir tmpapi/testfile/
+touch tmpapi/rclone.log
 dig +answer $api +short > tmpapi/api-ips-fresh
 
 #--------------------------#
@@ -83,6 +80,7 @@ NC='\033[0m'
 #------------------#
 
 input=tmpapi/api-ips
+sudo systemctl stop cloudplow
 while IFS= read -r ip; do
 	hostsline="$ip\t$api"
 	sudo -- sh -c -e "echo '$hostsline' >> /etc/hosts"
@@ -104,7 +102,7 @@ while IFS= read -r ip; do
 	sudo cp /etc/hosts.backup /etc/hosts
 	fi
 done < "$input"
-
+sudo systemctl start cloudplow
 #-----------------#
 # Use best result #
 #-----------------#
