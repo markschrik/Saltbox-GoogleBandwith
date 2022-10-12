@@ -1,5 +1,19 @@
 #!/bin/bash
+# This script has been edited to work with Saltbox
+# If you use the default rclone settings, this script will run out of the box.
+#
+# Do not edit this script unless you know what you are doing.
 
+
+# Defaults
+api=www.googleapis.com
+whitelist=.whitelist-apis
+blacklist=.blacklist-apis
+testfile='google:/Backups/GoogleDriveSpeedTest/500MB.bin'
+
+#-------------------------#
+# Check if Binfile exists #
+#-------------------------#
 
 if [ ! -f /mnt/remote/Backups/GoogleDriveSpeedTest/500MB.bin ]; then
     echo "First run detected. Creating 500MB test file and uploading it to Google Drive."
@@ -8,14 +22,6 @@ if [ ! -f /mnt/remote/Backups/GoogleDriveSpeedTest/500MB.bin ]; then
     mv /tmp/500MB.bin /mnt/remote/Backups/GoogleDriveSpeedTest/
     echo "Finished uploading to Google Drive."
 fi
-
-
-testfile='google:/Backups/GoogleDriveSpeedTest/500MB.bin'
-
-# Defaults
-api=www.googleapis.com
-whitelist=.whitelist-apis
-blacklist=.blacklist-apis
 
 #-------------------#
 # Hosts file backup #
@@ -80,7 +86,6 @@ NC='\033[0m'
 #------------------#
 
 input=tmpapi/api-ips
-#sudo systemctl stop cloudplow
 while IFS= read -r ip; do
 	hostsline="$ip\t$api"
 	sudo -- sh -c -e "echo '$hostsline' >> /etc/hosts"
@@ -102,7 +107,7 @@ while IFS= read -r ip; do
 	sudo cp /etc/hosts.backup /etc/hosts
 	fi
 done < "$input"
-#sudo systemctl start cloudplow
+
 #-----------------#
 # Use best result #
 #-----------------#
