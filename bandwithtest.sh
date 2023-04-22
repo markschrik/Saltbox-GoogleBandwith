@@ -114,7 +114,7 @@ done < "$input"
 
 ls tmpapi/speedresults > tmpapi/count
 max=$(sort -nr tmpapi/count | head -1)
-macs=$(cat tmpapi/speedresults/$max)
+macs=$(head -1 tmpapi/speedresults/$max)
 printf "${YEL}The fastest IP is $macs at a speed of $max | putting into hosts file\n"
 hostsline="$macs\t$api"
 sudo -- sh -c -e "echo '$hostsline' >> /etc/hosts"
